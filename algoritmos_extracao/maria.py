@@ -83,6 +83,6 @@ for i in range(len(titles)):
     obj["link"] = links[i]
     json_list.append(obj)
 
-filename = "sample.json"
+filename = "imoveis.json"
 
 mount_json(filename, json_list)
