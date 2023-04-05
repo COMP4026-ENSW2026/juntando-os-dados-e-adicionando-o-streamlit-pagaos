@@ -1,7 +1,5 @@
-import os.path
 import requests
 from bs4 import BeautifulSoup
-import json
 import re
 import os
 from mount_json import mount_json
