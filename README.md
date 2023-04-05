@@ -1,4 +1,7 @@
+# Ciência de Dados
+
 ## 📃 Estrutura
+
 A ideia é transformar todos os dados em um arquivo .json com a seguinte estrutura de atributos:
 
 ```json
@@ -8,7 +11,7 @@ A ideia é transformar todos os dados em um arquivo .json com a seguinte estrutu
         "localizacao": "Gleba Fazenda Palhano - Londrina/PR",
         "quartos": 2,
         "banheiros": 1,
-        "tamanho": "44.81m²",
+        "tamanho": "44.81",
         "aluguel": 1.600,
         "condominio": 300,
         "contato": "43999981333",
@@ -20,7 +23,9 @@ A ideia é transformar todos os dados em um arquivo .json com a seguinte estrutu
 dessa maneira teremos todos os dados organizados em uma estrutura.
 
 ## 👥 Equipe
+
 A equipe será composta por:
+
 - Eduardo Lacerda
 - Dani Torelli
 - Maria Fernanda
