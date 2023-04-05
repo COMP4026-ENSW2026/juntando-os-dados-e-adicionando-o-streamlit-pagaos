@@ -82,7 +82,7 @@ for i in range(len(titles)):
     obj["link"] = links[i]
     json_list.append(obj)
 
-filename = "sample.json"
+filename = "imoveis.json"
 if os.path.isfile(filename):
     with open(filename, "r+") as f:
         existing_data = json.load(f)
