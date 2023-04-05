@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import openai
 import smtplib
+from mount_json import mount_json
 
 # Key api GPT-3
 openai.api_key = "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"
@@ -11,43 +12,61 @@ openai.api_key = "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"
 URL = 'https://www.veneza.com.br/imoveis/apartamento-alugar-londrina'
 page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
-#links = soup.find_all("div", class_="jetgrid__col--6 jetgrid__col--md-8 jetgrid__col--sm-12 jetgrid__col--xs-24")
-#links = soup.find_all("div", class_="list__hover")
 url = soup.find_all("a", class_="list__link")
 base_url = "https://www.veneza.com.br"
 
 for link in url:
-    full_url = str(base_url) + str(link['href'])
+    links = str(base_url) + str(link['href'])
     print("\n")
-    print(full_url)
+    print(links)
   
     def information(link):
-        page = requests.get(full_url)
+        page = requests.get(links)
         soup = BeautifulSoup(page.content, "html.parser")
         teste = soup.find_all("div", class_="container")
 
         for div in teste:
-            titulo = div.find("h1", class_="card__type")
+            titles = div.find("h1", class_="card__type")
             codigo_anuncio = div.find("p", class_="card__reference")
-            localizacao = div.find("p", class_="card__address")
-            quartos = div.find("div", class_="card__element jetgrid jetgrid--justify-left jetgrid--align-center")
-            tamanho = div.find("div", class_="jetgrid jetgrid--align-center")
-            valor_aluguel = div.find("p", class_="ui__text--green")
-            valor_condominio = div.find("p", class_="ui__text--blue")
+            locations = div.find("p", class_="card__address")
+            rooms = div.find("div", class_="card__element jetgrid jetgrid--justify-left jetgrid--align-center")
+            sizes = div.find("div", class_="jetgrid jetgrid--align-center")
+            rent = div.find("p", class_="ui__text--green")
+            condominiums = div.find("p", class_="ui__text--blue")
             descricao = div.find("p", class_="card__text")
+            phones = ("43-3371-0001")
 
             try:
-                print(titulo.text.strip())
+                print(titles.text.strip())
                 print(codigo_anuncio.text.strip())
-                print(localizacao.text.split())
-                print(quartos.text.split())
-                print(tamanho.text.strip())
-                print(valor_aluguel.text.strip())
-                print(valor_condominio.text.strip())
+                print(locations.text.split())
+                print(rooms.text.split())
+                print(sizes.text.strip())
+                print(rent.text.strip())
+                print(condominiums.text.strip())
                 print(descricao.text.strip())
+                print(phones)
 
             except:
                 print("none")
 
 
     information(link)
+
+json_list = []
+for i in range(len(titles)):
+    obj = {}
+    obj["titulo"] = titles[i]
+    obj["localizacao"] = locations[i]
+    obj["quartos"] = rooms[i]
+    obj["banheiros"] = bathrooms[i]
+    obj["tamanho"] = sizes[i]
+    obj["aluguel"] = rent[i]
+    obj["condominio"] = condominiums[i]
+    obj["contato"] = phones[i]
+    obj["link"] = links[i]
+    json_list.append(obj)
+
+filename = "sample.json"
+
+mount_json(filename, json_list)
