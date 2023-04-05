@@ -1,14 +1,16 @@
+import os.path
 import requests
 from bs4 import BeautifulSoup
 import json
 import re
+import os
 
-URL = 'https://www.auroraimobi.com.br/imoveis/para-alugar/apartamento/londrina-pr?mobilia=talvez&condominio=&order=mais_relevantes'
+URL = "https://www.auroraimobi.com.br/imoveis/para-alugar/apartamento/londrina-pr?mobilia=talvez&condominio=&order=mais_relevantes"
 page = requests.get(URL)
 
-soup = BeautifulSoup(page.content, 'html.parser')
+soup = BeautifulSoup(page.content, "html.parser")
 
-cards = soup.find_all('li', class_='Imoveis_cardDisplay__e0Dc8')
+cards = soup.find_all("li", class_="Imoveis_cardDisplay__e0Dc8")
 
 properties = []
 titles = []
@@ -17,50 +19,84 @@ rooms = []
 bathrooms = []
 sizes = []
 locations = []
+rent = []
+condominiums = []
+phones = []
 
 for card in cards:
-    title = card.find('span', class_='font-weight-bold')
-    link = card.find('a')
+    link = card.find("a")
     immobile = card
 
-    titles.append(title.text.strip())
-    links.append('https://www.auroraimobi.com.br' + link['href'])
+    # titles.append(title.text.strip())
+    links.append("https://www.auroraimobi.com.br" + link["href"])
     properties.append(immobile)
 
 
 def get_details_page(aparment_url):
     details_page = requests.get(aparment_url)
-    soup = BeautifulSoup(details_page.content, 'html.parser')
+    soup = BeautifulSoup(details_page.content, "html.parser")
 
-    aparment_characteristics = soup.find_all(
-        'span', class_='Caracteristica_title__vzVJS')
-    
-    aparment_locations = soup.find_all('address', class_='mb-1', itemprop='address')
-    
+    title = soup.find("span", class_="mb-4").text
+
+    aparment_details = soup.find_all("span", class_="Caracteristica_title__vzVJS")
+
+    aparment_locations = soup.find_all("address", class_="mb-1", itemprop="address")
+
+    aparment_phone = soup.find(
+        "span", class_="ArboPhone_spaceBetweenNumberAndIcon__eC6kC"
+    ).text
+
     for location in aparment_locations:
         locations.append(location.text.strip())
 
+    aparment_prices = soup.find_all("span", class_="", itemprop="price")
+    apartment_rent = int(aparment_prices[0].text.strip().split()[1].replace(".", ""))
+    apartment_condominium = int(
+        aparment_prices[1].text.strip().split()[1].replace(".", "")
+    )
+
     results = []
-    for characteristic in aparment_characteristics:
-        value = re.findall(r'\d+', characteristic.text)
+    for characteristic in aparment_details:
+        value = re.findall(r"\d+", characteristic.text)
         results.append(value[0] if value else None)
 
     rooms.append(results[0])
     bathrooms.append(results[1])
     sizes.append(results[2])
+    rent.append(apartment_rent)
+    condominiums.append(apartment_condominium)
+    titles.append(title)
+    phones.append(aparment_phone)
 
 
 for link in links:
     details = get_details_page(link)
 
-print(titles)
-print(locations)
-print(rooms)
-print(bathrooms)
-print(sizes)
-print(links)
+json_list = []
+for i in range(len(titles)):
+    obj = {}
+    obj["titulo"] = titles[i]
+    obj["localizacao"] = locations[i]
+    obj["quartos"] = rooms[i]
+    obj["banheiros"] = bathrooms[i]
+    obj["tamanho"] = sizes[i]
+    obj["aluguel"] = rent[i]
+    obj["condominio"] = condominiums[i]
+    obj["contato"] = phones[i]
+    obj["link"] = links[i]
+    json_list.append(obj)
 
-characteristics = ['titulo', 'localizacao', 'quartos', 'banheiros',
-                   'tamanho', 'aluguel', 'condominio', 'contato', 'link']
+filename = "sample.json"
+if os.path.isfile(filename):
+    with open(filename, "r+") as f:
+        existing_data = json.load(f)
+        existing_data.extend(json_list)
+        f.seek(0)
+        json.dump(existing_data, f, ensure_ascii=False)
+        f.truncate()
+else:
+    with open(filename, "w") as f:
+        json.dump(json_list, f, ensure_ascii=False)
 
-json_object = json.dumps(dict(zip(titles, links)), ensure_ascii=False)
+    with open(filename, "a") as f:
+        f.write("\n")
