@@ -5,6 +5,7 @@ import json
 from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from mount_json import mount_json
 
 
 class Dudu:
@@ -22,7 +23,7 @@ class Dudu:
         for link in links:
             aps.append(self.get_infos(link['href']))
 
-        return json.dumps(aps, indent=4, ensure_ascii=False)
+        return aps
 
 
     def get_infos(self, link):
@@ -31,11 +32,37 @@ class Dudu:
         soup = BeautifulSoup(page.content, "html.parser")
 
         titulo = soup.find("title").text.splitlines()[0]
+        quarto = int(
+            soup
+                .find_all("div", class_="col-xs-6")[0]
+                .text
+                .replace(' Dormitórios', '')
+                .strip()
+        )
+        banheiro = int(
+            soup
+                .find_all("div", class_="col-xs-6")[1]
+                .text
+                .replace(' Banheiros', '')
+                .strip()
+        )
+        tamanho = soup.find_all("div", class_="col-xs-6")[4].text.replace('m² imóvel', '').strip()
         aluguel = float(
             soup
                 .find("h2", class_="elementor-heading-title")
                 .text
                 .replace('R$ ', '')
+                .replace('.', '')
+                .replace(',', '.')
+        )
+        condominio = soup.find_all("div", class_="elementor-clearfix")[2]
+        condominio = float(
+            condominio
+                .find("p")
+                .text
+                .replace('*', '')
+                .replace('*', '')
+                .replace('Condomínio: R$ ', '')
                 .replace('.', '')
                 .replace(',', '.')
         )
@@ -46,11 +73,11 @@ class Dudu:
 
         aux["titulo"] = titulo
         aux["localizacao"] = titulo.split('alugar no ')[-1]
-        aux["quartos"] = ''
-        aux["banheiros"] = ''
-        aux["tamanho"] = ''
+        aux["quartos"] = quarto
+        aux["banheiros"] = banheiro
+        aux["tamanho"] = tamanho
         aux["aluguel"] = aluguel
-        aux["condominio"] = ''
+        aux["condominio"] = condominio
         aux["contato"] = contato_formatado
         aux["link"] = link
 
@@ -62,5 +89,4 @@ newsletter = Dudu(
     "https://www.santamerica.com.br/alugar/apartamento-para-alugar/pr/londrina"
 )
 
-with open("./sample.json", "w") as outfile:
-    outfile.write(newsletter.get_notices())
+mount_json("imoveis.json", newsletter.get_notices())
