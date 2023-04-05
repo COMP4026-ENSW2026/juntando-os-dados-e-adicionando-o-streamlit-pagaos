@@ -25,11 +25,7 @@ phones = []
 
 for card in cards:
     link = card.find("a")
-    immobile = card
-
-    # titles.append(title.text.strip())
     links.append("https://www.auroraimobi.com.br" + link["href"])
-    properties.append(immobile)
 
 
 def get_details_page(aparment_url):
