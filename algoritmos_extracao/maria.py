@@ -72,8 +72,8 @@ for i in range(len(titles)):
     obj = {}
     obj["titulo"] = titles[i]
     obj["localizacao"] = locations[i]
-    obj["quartos"] = rooms[i]
-    obj["banheiros"] = bathrooms[i]
+    obj["quartos"] = int(rooms[i])
+    obj["banheiros"] = int(bathrooms[i])
     obj["tamanho"] = sizes[i]
     obj["aluguel"] = rent[i]
     obj["condominio"] = condominiums[i]
