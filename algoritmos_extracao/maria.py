@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 import os
+from mount_json import mount_json
 
 URL = "https://www.auroraimobi.com.br/imoveis/para-alugar/apartamento/londrina-pr?mobilia=talvez&condominio=&order=mais_relevantes"
 page = requests.get(URL)
@@ -82,17 +83,6 @@ for i in range(len(titles)):
     obj["link"] = links[i]
     json_list.append(obj)
 
-filename = "imoveis.json"
-if os.path.isfile(filename):
-    with open(filename, "r+") as f:
-        existing_data = json.load(f)
-        existing_data.extend(json_list)
-        f.seek(0)
-        json.dump(existing_data, f, ensure_ascii=False)
-        f.truncate()
-else:
-    with open(filename, "w") as f:
-        json.dump(json_list, f, ensure_ascii=False)
+filename = "sample.json"
 
-    with open(filename, "a") as f:
-        f.write("\n")
+mount_json(filename, json_list)
