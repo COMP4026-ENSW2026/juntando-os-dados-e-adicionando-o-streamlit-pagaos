@@ -1,5 +1,4 @@
 import requests
-import openai
 import smtplib
 import json
 from bs4 import BeautifulSoup
@@ -9,8 +8,7 @@ from mount_json import mount_json
 
 
 class Dudu:
-    def __init__(self, api_key, url):
-        openai.api_key = api_key
+    def __init__(self, url):
         self.url = url
         self.page = requests.get(url)
 
@@ -85,7 +83,6 @@ class Dudu:
 
 
 newsletter = Dudu(
-    "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",
     "https://www.santamerica.com.br/alugar/apartamento-para-alugar/pr/londrina"
 )
 
