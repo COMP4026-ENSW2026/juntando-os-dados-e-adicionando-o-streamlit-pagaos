@@ -35,8 +35,8 @@ def information(links):
         phones = ("43-3371-0001")
 
         aux["titulo"] = titles.text.strip()
-        aux["localizacao"] = locations.text.strip().replace("\n", " ")
-        aux["quartos"] = rooms.text.strip().replace("\n", " ")
+        aux["localizacao"] = locations.text.strip().replace("  ", "").replace("\n", " ")
+        aux["quartos"] = rooms.text.strip().replace(" ", "").replace("quartos", "")
         aux["banheiros"] = ''
         aux["tamanho"] = sizes.text.strip()
         aux["aluguel"] = rent.text.strip()
@@ -51,8 +51,6 @@ json_list = []
 for link in url:
     links = str(base_url) + str(link['href'])
     json_list.append(information(links))
-    #print(information(links))
 
-#print(json_list)
 
 mount_json("imoveis.json", json_list)
