@@ -1,11 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import openai
-import smtplib
 from mount_json import mount_json
-
-# Key api GPT-3
-openai.api_key = "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"
 
 
 # Requests para pegar as ofertas no site da Veneza
@@ -38,7 +33,7 @@ def information(links):
         aux["localizacao"] = locations.text.strip().replace("  ", "").replace("\n", " ")
         aux["quartos"] = rooms.text.strip().replace(" ", "").replace("quartos", "")
         aux["banheiros"] = ''
-        aux["tamanho"] = sizes.text.strip()
+        aux["tamanho"] = aux["tamanho"] = sizes.text.strip().replace(" ", "").replace("total", "").replace("\u00A0", "")
         aux["aluguel"] = rent.text.strip()
         aux["condominio"] = ''
         if condominiums != None:
