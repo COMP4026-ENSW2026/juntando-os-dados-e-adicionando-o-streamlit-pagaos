@@ -89,7 +89,6 @@ def maria_sidebar():
         data = json.load(f)
     st.write(data)
 
-
     st.button("Re-run")
 
 
