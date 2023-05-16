@@ -5,8 +5,6 @@ import json
 import subprocess
 import os
 import io
-from tqdm import tqdm
-
 
 
 def intro():

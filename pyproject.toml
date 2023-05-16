@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "juntando-os-dados-e-adicionando-o-streamlit-pagaos"
+version = "0.1.0"
+description = ""
+authors = ["VazMF <vazfernandam@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.22.0"
+numpy = "^1.24.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
