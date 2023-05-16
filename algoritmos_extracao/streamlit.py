@@ -1,7 +1,13 @@
 import streamlit as st
 import time
 import numpy as np
+import json
 import subprocess
+import os
+import io
+from tqdm import tqdm
+
+
 
 def intro():
 
@@ -11,30 +17,80 @@ def intro():
 
 def dani_sidebar():
     st.markdown(f'# {list(page_names_to_funcs.keys())[1]}')
-    st.write("Página da Dani")
-    progress_bar = st.sidebar.progress(0)
-    status_text = st.sidebar.empty()
-    last_rows = np.random.randn(1, 1)
-    chart = st.line_chart(last_rows)
+    
+    if os.path.exists("imoveis.json"):
+        os.remove("imoveis.json")
 
-    for i in range(1, 101):
-        new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-        status_text.text("%i%% Complete" % i)
-        chart.add_rows(new_rows)
-        progress_bar.progress(i)
-        last_rows = new_rows
-        time.sleep(0.05)
+    progress_text = "Por favor, espere até realizarmos sua solicitação!"
+    my_bar = st.progress(0, text=progress_text)
 
-    progress_bar.empty()
+    subprocess.run(["python3", "dani.py"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(0.1)
+
+    for percent_complete in range(100):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1, text=progress_text)
+
+    with open("imoveis.json") as f:
+        data = json.load(f)
+    st.write(data)
+
 
     st.button("Re-run")
 
 
+
+
+
 def dudu_sidebar():
-    st.write("Página do Dudu")
+    st.markdown(f'# {list(page_names_to_funcs.keys())[2]}')
+    
+    if os.path.exists("imoveis.json"):
+        os.remove("imoveis.json")
+
+    progress_text = "Por favor, espere até realizarmos sua solicitação!"
+    my_bar = st.progress(0, text=progress_text)
+
+    subprocess.run(["python3", "dudu.py"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(0.1)
+
+    for percent_complete in range(100):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1, text=progress_text)
+
+    with open("imoveis.json") as f:
+        data = json.load(f)
+    st.write(data)
+
+
+    st.button("Re-run")
+    
+
+
+
 
 def maria_sidebar():
-    st.write("Página da Maria")
+    st.markdown(f'# {list(page_names_to_funcs.keys())[3]}')
+    
+    if os.path.exists("imoveis.json"):
+        os.remove("imoveis.json")
+
+    progress_text = "Por favor, espere até realizarmos sua solicitação!"
+    my_bar = st.progress(0, text=progress_text)
+
+    subprocess.run(["python3", "maria.py"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(0.1)
+
+    for percent_complete in range(100):
+        time.sleep(0.1)
+        my_bar.progress(percent_complete + 1, text=progress_text)
+
+    with open("imoveis.json") as f:
+        data = json.load(f)
+    st.write(data)
+
+
+    st.button("Re-run")
 
 
 page_names_to_funcs = {
